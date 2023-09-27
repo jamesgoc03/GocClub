@@ -1,7 +1,7 @@
 package Vista;
 
 import java.util.Scanner;
-import java.util.ArrayList;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ModeloImp.*;
 import Controladores.ControladorPersonasInput;
 import Controladores.ControladorPersonasBussiness;
@@ -10,15 +10,15 @@ import Controladores.ControladorAutorizadoBussiness;
 import Controladores.ControladorClubBussiness;
 import Controladores.ControladorFacturasInput;
 import Controladores.ControladorFacturasBussiness;
-import ControladoresImp.ControladorBussinessInputImp;
-import ControladoresImp.ControladorBussinessImp;
 import ControladoresImp.ControladorInputImp;
 
 public class principal {
 
 	public static void main(String[] args) {
-
-		Club gocClub = new Club(new ArrayList<Socio>());
+		
+		ClassPathXmlApplicationContext contexto = new ClassPathXmlApplicationContext("Contexto.xml");
+		Club gocClub = contexto.getBean("gocClub", Club.class);
+		
 		Scanner input = new Scanner(System.in);
 		boolean ejecucion = true;
 		String menu = "\n             GocClub              "
@@ -37,7 +37,7 @@ public class principal {
 					+ "\n10. Menú de muestra de datos"
 					+ "\n0. Salir del programa";
 		
-		ControladorInputImp controladorInput = new ControladorInputImp();
+		ControladorInputImp controladorInput = contexto.getBean("controladorInput", ControladorInputImp.class);
 		
 		while (ejecucion) {
 			try {
@@ -53,10 +53,10 @@ public class principal {
 						break;
 						
 					case 1: {
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
-						ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-						ControladorClubBussiness clubBussiness = new ControladorBussinessImp();
-						ControladorSocioBussiness socioBussiness = new ControladorBussinessImp();
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
+						ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+						ControladorClubBussiness clubBussiness = contexto.getBean("controladorBussiness", ControladorClubBussiness.class);
+						ControladorSocioBussiness socioBussiness = contexto.getBean("controladorBussiness", ControladorSocioBussiness.class);
 						
 						System.out.println("\n***************Afiliar socio***************");
 						
@@ -80,7 +80,12 @@ public class principal {
 						clubBussiness.validarTopeMinimo(tipoDeSuscripcion, fondos);
 						clubBussiness.validarTopeMaximo(tipoDeSuscripcion, fondos);
 						
-						Socio socio = new Socio(cedula, nombre, fondos, tipoDeSuscripcion);
+						Socio socio = contexto.getBean("socio", Socio.class);
+						
+						socio.setCedula(cedula);
+						socio.setNombre(nombre);
+						socio.setFondos(fondos);
+						socio.setTipoDeSuscripcion(tipoDeSuscripcion);
 						
 						gocClub.setSocio(socio);
 						
@@ -88,8 +93,8 @@ public class principal {
 						break;
 					}	
 					case 2: {
-						ControladorSocioBussiness socioBussiness = new ControladorBussinessImp();
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+						ControladorSocioBussiness socioBussiness = contexto.getBean("controladorBussiness", ControladorSocioBussiness.class);
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 						
 						System.out.println("\n***************Eliminar socio***************");
 						System.out.println("Ingrese la cedula del socio que se quiere eliminar: ");
@@ -99,10 +104,10 @@ public class principal {
 						break;
 					}	
 					case 3: {
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
-						ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-						ControladorAutorizadoBussiness autorizadoBussiness = new ControladorBussinessImp();
-						ControladorClubBussiness clubBussiness = new ControladorBussinessImp();
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
+						ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+						ControladorAutorizadoBussiness autorizadoBussiness = contexto.getBean("controladorBussiness", ControladorAutorizadoBussiness.class);
+						ControladorClubBussiness clubBussiness = contexto.getBean("controladorBussiness", ControladorClubBussiness.class);
 						
 						System.out.println("\n***************Registrar autorizado***************");
 						System.out.println("Ingrese el nombre de la persona que se quiere registrar: ");
@@ -118,7 +123,9 @@ public class principal {
 						autorizadoBussiness.validarCupoParaAutorizado(socio);
 						clubBussiness.validarFondosSuficientes(1d, socio.getFondos());
 						
-						Autorizado autorizado = new Autorizado(cedula, nombre);
+						Autorizado autorizado = contexto.getBean("autorizado", Autorizado.class);
+						autorizado.setCedula(cedula);
+						autorizado.setNombre(nombre);
 						socio.setAutorizado(autorizado);
 						
 						System.out.println("\n***************Se registro con éxito**************");
@@ -126,8 +133,8 @@ public class principal {
 						break;
 					}	
 					case 4: {
-						ControladorAutorizadoBussiness autorizadoBussiness = new ControladorBussinessImp();
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+						ControladorAutorizadoBussiness autorizadoBussiness = contexto.getBean("controladorBussiness", ControladorAutorizadoBussiness.class);
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 						
 						System.out.println("\n***************Eliminar autorizado***************");
 						System.out.println("Ingrese la cedula del autorizado que se quiere eliminar: ");
@@ -137,11 +144,11 @@ public class principal {
 						break;
 					}	
 					case 5: {
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
-						ControladorFacturasInput facturasInput = new ControladorBussinessInputImp();
-						ControladorFacturasBussiness facturasBussiness = new ControladorBussinessImp();
-						ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-						ControladorClubBussiness clubBussiness = new ControladorBussinessImp();
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
+						ControladorFacturasInput facturasInput = contexto.getBean("controladorBussinessInput", ControladorFacturasInput.class);
+						ControladorFacturasBussiness facturasBussiness = contexto.getBean("controladorBussiness", ControladorFacturasBussiness.class);
+						ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+						ControladorClubBussiness clubBussiness = contexto.getBean("controladorBussiness", ControladorClubBussiness.class);
 						
 						System.out.println("\n*********Registrar consumo a socio*********");
 						System.out.println("Ingrese la cedula del socio que quiere registrar un consumo: ");
@@ -155,7 +162,10 @@ public class principal {
 						double valor = facturasInput.validarValor(input.next());
 						clubBussiness.validarFondosSuficientes(valor, socio.getFondos());
 						
-						Factura factura = new Factura(socio.getNombre(), conceptoConsumo, valor);
+						Factura factura = contexto.getBean("factura", Factura.class);
+						factura.setNombre(socio.getNombre());
+						factura.setConceptoConsumo(conceptoConsumo);
+						factura.setValor(valor);
 						socio.setFactura(factura);
 						
 						System.out.println("\n******Se registro el consumo con éxito*****");
@@ -163,9 +173,9 @@ public class principal {
 						break;
 					}
 					case 6: {
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
-						ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-						ControladorFacturasBussiness facturaBussiness = new ControladorBussinessImp();
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
+						ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+						ControladorFacturasBussiness facturaBussiness = contexto.getBean("controladorBussiness", ControladorFacturasBussiness.class);
 						
 						System.out.println("\n***************Pagar factura de socio***************");
 						System.out.println("Ingrese la cedula del socio que desea pagar una factura: ");
@@ -180,12 +190,12 @@ public class principal {
 						break;
 					}
 					case 7: {
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
-						ControladorFacturasInput facturasInput = new ControladorBussinessInputImp();
-						ControladorAutorizadoBussiness autorizadoBussiness = new ControladorBussinessImp();
-						ControladorFacturasBussiness facturasBussiness = new ControladorBussinessImp();
-						ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-						ControladorClubBussiness clubBussiness = new ControladorBussinessImp();
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
+						ControladorFacturasInput facturasInput = contexto.getBean("controladorBussinessInput", ControladorFacturasInput.class);
+						ControladorAutorizadoBussiness autorizadoBussiness = contexto.getBean("controladorBussiness", ControladorAutorizadoBussiness.class);
+						ControladorFacturasBussiness facturasBussiness = contexto.getBean("controladorBussiness", ControladorFacturasBussiness.class);
+						ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+						ControladorClubBussiness clubBussiness = contexto.getBean("controladorBussiness", ControladorClubBussiness.class);
 						
 						System.out.println("\n*********Registrar consumo a autorizado*********");
 						System.out.println("Ingrese la cedula del autorizado que quiere registrar un consumo: ");
@@ -200,17 +210,20 @@ public class principal {
 						Socio socio = autorizadoBussiness.buscarSocioDeAutorizado(gocClub.getSocios(), autorizado.getCedula());
 						clubBussiness.validarFondosSuficientes(valor, socio.getFondos());
 						
-						Factura factura = new Factura(autorizado.getNombre(), conceptoConsumo, valor);
+						Factura factura = contexto.getBean("factura", Factura.class);
+						factura.setNombre(autorizado.getNombre());
+						factura.setConceptoConsumo(conceptoConsumo);
+						factura.setValor(valor);
 						autorizado.setFactura(factura);
 						
 						System.out.println("\n*********Se registro el consumo con éxito*******");
 						break;
 					}
 					case 8: {
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
-						ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-						ControladorFacturasBussiness facturaBussiness = new ControladorBussinessImp();
-						ControladorAutorizadoBussiness autorizadoBussiness = new ControladorBussinessImp();
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
+						ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+						ControladorFacturasBussiness facturaBussiness = contexto.getBean("controladorBussiness", ControladorFacturasBussiness.class);
+						ControladorAutorizadoBussiness autorizadoBussiness = contexto.getBean("controladorBussiness", ControladorAutorizadoBussiness.class);
 						
 						System.out.println("\n***************Pagar factura de autorizado***************");
 						System.out.println("Ingrese la cedula del autorizado al que se le pagará una factura: ");
@@ -228,9 +241,9 @@ public class principal {
 						break;
 					}
 					case 9: {
-						ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
-						ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-						ControladorClubBussiness clubBussiness = new ControladorBussinessImp();
+						ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
+						ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+						ControladorClubBussiness clubBussiness = contexto.getBean("controladorBussiness", ControladorClubBussiness.class);
 	
 						System.out.println("\n***************Aumentar fondos a un socio***************");
 						System.out.println("Ingrese el número de cedula del socio que quiere aumentar fondos: ");
@@ -275,8 +288,8 @@ public class principal {
 									break;
 								}
 								case 1: {
-									ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-									ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+									ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+									ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 									
 									System.out.println("\n***************Mostrar un socio***************");
 									System.out.println("Ingrese el número de cedula del socio que quiere mostrar");
@@ -288,8 +301,8 @@ public class principal {
 									break;
 								}
 								case 2: {
-									ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-									ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+									ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+									ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 									
 									System.out.println("\n***************Mostrar un socio y sus autorizados***************");
 									System.out.println("Ingrese el número de cedula del socio que quiere mostrar");
@@ -302,8 +315,8 @@ public class principal {
 									break;
 								}
 								case 3: {
-									ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-									ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+									ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+									ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 									
 									System.out.println("\n***************Mostrar un socio y sus facturas***************");
 									System.out.println("Ingrese el número de cedula del socio que quiere mostrar");
@@ -316,8 +329,8 @@ public class principal {
 									break;
 								}
 								case 4: {
-									ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-									ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+									ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+									ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 									
 									System.out.println("\n***************Mostrar un socio, sus autorizados y sus facturas***************");
 									System.out.println("Ingrese el número de cedula del socio que quiere mostrar");
@@ -331,8 +344,8 @@ public class principal {
 									break;
 								}
 								case 5: {
-									ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-									ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+									ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+									ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 									
 									System.out.println("\n***************Mostrar un autorizado***************");
 									System.out.println("Ingrese el número de cedula del autorizado que quiere mostrar");
@@ -344,8 +357,8 @@ public class principal {
 									break;
 								}
 								case 6: {
-									ControladorPersonasBussiness personasBussiness = new ControladorBussinessImp();
-									ControladorPersonasInput personasInput = new ControladorBussinessInputImp();
+									ControladorPersonasBussiness personasBussiness = contexto.getBean("controladorBussiness", ControladorPersonasBussiness.class);
+									ControladorPersonasInput personasInput = contexto.getBean("controladorBussinessInput", ControladorPersonasInput.class);
 									
 									System.out.println("\n***************Mostrar un autorizado y sus facturas***************");
 									System.out.println("Ingrese el número de cedula del autorizado que quiere mostrar");
@@ -403,6 +416,8 @@ public class principal {
 			}
 
 		}
+		
+		contexto.close();
 
 	}
 
