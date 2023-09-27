@@ -7,12 +7,8 @@ public class Club {
 	private ArrayList<Socio> socios;
 	
 	public Club () {
+		socios = new ArrayList<Socio>();
 	}
-
-	public Club(ArrayList<Socio> socios) {
-		this.socios = socios;
-	}
-	
 
 	public ArrayList<Socio> getSocios() {
 		return socios;

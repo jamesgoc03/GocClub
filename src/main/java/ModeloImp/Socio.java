@@ -10,6 +10,7 @@ public class Socio extends Persona {
 	
 	public Socio() {
 		super();
+		autorizados = new ArrayList<Autorizado>();
 	}
 	
 	
