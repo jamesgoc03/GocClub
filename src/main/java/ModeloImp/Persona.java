@@ -9,6 +9,7 @@ public class Persona {
 	private ArrayList<Factura> facturas;
 	
 	public Persona() {
+		facturas = new ArrayList<Factura>();
 	}
 
 	public Persona(int cedula, String nombre) {
